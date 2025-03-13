@@ -6,9 +6,7 @@ import com.test.product_service.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -23,5 +21,27 @@ public class ProductController {
     public ResponseEntity<List<Product>> getAllProducts(){
         return new ResponseEntity<>(productService.getAll(), HttpStatus.OK);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Product> getProductById(@PathVariable("id") Long id){
+        return new ResponseEntity<>(productService.single(id),HttpStatus.OK);
+    }
+
+    @PostMapping
+    public ResponseEntity<Product> addProduct(@RequestBody Product product){
+        return new ResponseEntity<>(productService.add(product),HttpStatus.OK);
+    }
+
+    @PutMapping
+    public ResponseEntity<Product> updateProduct(@RequestBody Product product){
+        return new ResponseEntity<>(productService.update(product),HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> removeProduct(@PathVariable("id") Long id){
+        productService.remove(id);
+        return ResponseEntity.noContent().build();
+    }
+
 
 }

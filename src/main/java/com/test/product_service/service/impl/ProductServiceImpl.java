@@ -120,6 +120,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void remove(Long id) {
+
         try {
                     RestAssured.given()
                     .relaxedHTTPSValidation()
@@ -131,8 +132,8 @@ public class ProductServiceImpl implements ProductService {
                     .then()
                     .statusCode(200)
                     .extract().response();
-
                     log.info("product removed");
+
         }catch (Exception e){
             throw new RuntimeException("product not remove");
         }
