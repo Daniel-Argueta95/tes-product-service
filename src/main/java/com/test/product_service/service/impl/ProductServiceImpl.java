@@ -2,6 +2,7 @@ package com.test.product_service.service.impl;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.test.product_service.exception.ResourceNotFoundException;
 import com.test.product_service.model.Product;
 import com.test.product_service.service.ProductService;
 import io.restassured.RestAssured;
@@ -18,6 +19,9 @@ import java.util.List;
 public class ProductServiceImpl implements ProductService {
 
     private static final String URI = "https://fakestoreapi.com";
+    private static final String PATH = "products";
+    private static final String CONTENT_TYPE = "Content-Type";
+    private static final String APPLICATION_JSON = "application/json";
 
     @Override
     public List<Product> getAll() {
@@ -27,9 +31,9 @@ public class ProductServiceImpl implements ProductService {
                     .given()
                     .relaxedHTTPSValidation()
                     .baseUri(URI)
-                    .header("Content-Type", "application/json")
+                    .header(CONTENT_TYPE, APPLICATION_JSON)
                     .when()
-                    .get("/products")
+                    .get("/"+PATH)
                     .then()
                     .statusCode(200)
                     .extract().response();
@@ -39,7 +43,7 @@ public class ProductServiceImpl implements ProductService {
                             new TypeReference<List<Product>>() {}
             );
         }catch (Exception e){
-            throw new RuntimeException("there are no results");
+            throw new ResourceNotFoundException("there are no results");
         }
 
     }
@@ -52,9 +56,9 @@ public class ProductServiceImpl implements ProductService {
                     .given()
                     .relaxedHTTPSValidation()
                     .baseUri(URI)
-                    .header("Content-Type", "application/json")
+                    .header(CONTENT_TYPE, APPLICATION_JSON)
                     .when()
-                    .get("/products/" + id)
+                    .get("/"+PATH+"/" + id)
                     .then()
                     .statusCode(200)
                     .extract().response();
@@ -64,7 +68,7 @@ public class ProductServiceImpl implements ProductService {
                             new TypeReference<Product>() {}
                     );
         }catch (Exception e){
-            throw new RuntimeException("product not found");
+            throw new ResourceNotFoundException("product not found");
         }
     }
 
@@ -75,11 +79,11 @@ public class ProductServiceImpl implements ProductService {
                     .given()
                     .relaxedHTTPSValidation()
                     .baseUri(URI)
-                    .header("Content-Type", "application/json")
+                    .header(CONTENT_TYPE, APPLICATION_JSON)
                     .contentType(ContentType.JSON)
                     .body(product)
                     .when()
-                    .post("/products")
+                    .post("/"+PATH)
                     .then()
                     .statusCode(200)
                     .extract().response();
@@ -89,7 +93,7 @@ public class ProductServiceImpl implements ProductService {
                             new TypeReference<Product>() {}
                     );
         }catch (Exception e){
-            throw new RuntimeException("product not added");
+            throw new ResourceNotFoundException("product not added");
         }
     }
 
@@ -100,11 +104,11 @@ public class ProductServiceImpl implements ProductService {
                     .given()
                     .relaxedHTTPSValidation()
                     .baseUri(URI)
-                    .header("Content-Type", "application/json")
+                    .header(CONTENT_TYPE, APPLICATION_JSON)
                     .contentType(ContentType.JSON)
                     .body(product)
                     .when()
-                    .put("/products" + product.getId())
+                    .put("/" + PATH + product.getId())
                     .then()
                     .statusCode(200)
                     .extract().response();
@@ -114,7 +118,7 @@ public class ProductServiceImpl implements ProductService {
                             new TypeReference<Product>() {}
                     );
         }catch (Exception e){
-            throw new RuntimeException("product not updated");
+            throw new ResourceNotFoundException("product not updated");
         }
     }
 
@@ -125,17 +129,17 @@ public class ProductServiceImpl implements ProductService {
                     RestAssured.given()
                     .relaxedHTTPSValidation()
                     .baseUri(URI)
-                    .header("Content-Type", "application/json")
+                    .header(CONTENT_TYPE, APPLICATION_JSON)
                     .contentType(ContentType.JSON)
                     .when()
-                    .put("/products" + id)
+                    .put("/" + PATH + "/" + id)
                     .then()
                     .statusCode(200)
                     .extract().response();
                     log.info("product removed");
 
         }catch (Exception e){
-            throw new RuntimeException("product not remove");
+            throw new ResourceNotFoundException("product not remove");
         }
     }
 }
